@@ -7,4 +7,4 @@ from super_types.apps import SuperTypesConfig
 
 
 class SuperType(models.Model):
-    type = CharField(max_length=50)
+    super_type = models.CharField(max_length=50)
