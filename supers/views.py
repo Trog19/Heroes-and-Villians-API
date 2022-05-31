@@ -1,7 +1,16 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-@api_view(['GET'])
-def Super_list(request):
+from supers import serializers
+from .models import Super
+from .serializers import SuperSerializer
 
-    return Response ('ok')
+@api_view(['GET'])
+def supers_list(request):
+
+    super = Super.objects.all()
+
+    serializers = SuperSerializer(super, many=True)
+
+
+    return Response (serializers.data)
