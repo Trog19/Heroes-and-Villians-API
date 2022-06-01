@@ -10,6 +10,11 @@ from django.shortcuts import get_object_or_404
 @api_view(['GET', 'POST'])
 def supers_list(request):
     if request.method == 'GET':
+        type_param = request.query_params.get('type')
+        if type_param:
+            supers_by_type = Super.objects.filter(super_type__super_type=type_param)
+            serializer = SuperSerializer(supers_by_type, many=True)
+            return Response(serializer.data)
         super = Super.objects.all()
         serializers = SuperSerializer(super, many=True)
         return Response (serializers.data)
@@ -20,7 +25,7 @@ def supers_list(request):
         return Response(serializers.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def super_detail(request, pk):
+def supers_detail(request, pk):
     super = get_object_or_404(Super, pk=pk)
     if request.method == 'GET':
         serializers = SuperSerializer(super)
@@ -36,22 +41,10 @@ def super_detail(request, pk):
 
 
 @api_view(['GET'])
-def supers_detail(request):
-    hero_param = request.query_params.filter(super_type_id = 1)
-    villain_param = request.query_params.filter(super_type_id = 2)
+def supers_type(request):
+    type_param = request.query_params.get('type')
     if request.method == 'GET':
-        if hero_param:
-            # super = Super.objects.filter(super_type_id = 1)
-            serializers = SuperSerializer(hero_param, many=True)
+        if type_param:
+            supers = Super.objects.filter(super_type__super_type=type_param)
+            serializers = SuperSerializer(supers, many=True)
             return Response (serializers.data)
-        elif villain_param:
-            # super = Super.objects.filter(super_type_id = 2)
-            serializers = SuperSerializer(villain_param, many=True)
-            return Response(serializers.data)
-
-
-
-
-        # super = Super.objects.filter(super_type_id = 2)
-    #     serializers = SuperSerializer(super, many=True)
-    #     return Response (serializers.data)
